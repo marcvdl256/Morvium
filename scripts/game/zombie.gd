@@ -59,7 +59,7 @@ func setup(enemy_kind: String, health_multiplier: float = 1.0) -> void:
 func _process(delta: float) -> void:
 	if dead:
 		death_timer -= delta
-		modulate.a = clamp(death_timer / 0.35, 0.0, 1.0)
+		modulate.a = clampf(death_timer / 0.35, 0.0, 1.0)
 		rotation += delta * 1.5
 		position.y += 25.0 * delta
 		if death_timer <= 0.0:
@@ -83,7 +83,7 @@ func _process(delta: float) -> void:
 func take_damage(amount: float, knockback: float = 0.0) -> void:
 	if dead:
 		return
-	var actual := amount * (1.0 - armor)
+	var actual: float = amount * (1.0 - armor)
 	health -= actual
 	position.x += knockback
 	flash_timer = 0.08
@@ -101,9 +101,9 @@ func die(grant_reward: bool = true) -> void:
 	queue_redraw()
 
 func _draw() -> void:
-	var body := Color("6f7c56")
-	var skin := Color("a1a778")
-	var dark := Color("202522")
+	var body: Color = Color("6f7c56")
+	var skin: Color = Color("a1a778")
+	var dark: Color = Color("202522")
 	if kind == "runner":
 		body = Color("7b6651")
 	elif kind == "tank":
@@ -115,7 +115,7 @@ func _draw() -> void:
 	if flash_timer > 0.0:
 		body = Color.WHITE
 		skin = Color.WHITE
-	var scale_factor := 1.0
+	var scale_factor: float = 1.0
 	if kind == "tank":
 		scale_factor = 1.35
 	if kind == "runner":
@@ -135,6 +135,6 @@ func _draw() -> void:
 	if kind == "tank":
 		draw_rect(Rect2(-24, -35, 48, 12), Color("343d31"), true)
 	if health < max_health and not dead:
-		var ratio := clamp(health / max_health, 0.0, 1.0)
+		var ratio: float = clampf(health / max_health, 0.0, 1.0)
 		draw_rect(Rect2(-24, -72, 48, 5), Color("2b2424"), true)
 		draw_rect(Rect2(-24, -72, 48 * ratio, 5), Color("b44b3e"), true)
