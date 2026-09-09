@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="BuildingData" load_steps=2 format=3]
+
+[ext_resource path="res://scripts/buildings/building_data.gd" type="Script" id="1"]
+
+[resource]
+script = ExtResource("1")
+display_name = "Basic Block"
+cost = 25
+max_health = 150.0
+size_cells = Vector2i(1, 1)
