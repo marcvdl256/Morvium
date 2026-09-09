@@ -19,7 +19,6 @@ var attack_timer: float = 0.0
 var flash_timer: float = 0.0
 var death_timer: float = 0.0
 var dead: bool = false
-var hit_offset: Vector2 = Vector2.ZERO
 
 func setup(enemy_kind: String, health_multiplier: float = 1.0) -> void:
 	kind = enemy_kind
@@ -74,6 +73,7 @@ func _process(delta: float) -> void:
 	else:
 		if kind == "exploder":
 			reached_tower.emit(attack_damage)
+			died.emit(self, 0)
 			die(false)
 		elif attack_timer <= 0.0:
 			attack_timer = attack_cooldown
@@ -116,8 +116,10 @@ func _draw() -> void:
 		body = Color.WHITE
 		skin = Color.WHITE
 	var scale_factor := 1.0
-	if kind == "tank": scale_factor = 1.35
-	if kind == "runner": scale_factor = 0.85
+	if kind == "tank":
+		scale_factor = 1.35
+	if kind == "runner":
+		scale_factor = 0.85
 	draw_circle(Vector2(0, -42) * scale_factor, 15.0 * scale_factor, skin)
 	draw_rect(Rect2(Vector2(-15, -28) * scale_factor, Vector2(30, 45) * scale_factor), body, true)
 	draw_line(Vector2(-8, 14) * scale_factor, Vector2(-13, 38) * scale_factor, dark, 7.0 * scale_factor)
