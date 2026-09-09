@@ -19,6 +19,9 @@ func _process(delta: float) -> void:
 	super._process(delta)
 	if is_instance_valid(player_character):
 		player_character.update_character(delta, not game_over and not paused_game)
+	if not game_over and not paused_game and Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+		if get_viewport().gui_get_hovered_control() == null:
+			fire_weapon(get_global_mouse_position())
 
 func fire_weapon(target_pos: Vector2) -> void:
 	if fire_cooldown > 0.0 or reloading:
