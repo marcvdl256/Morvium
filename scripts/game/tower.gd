@@ -42,7 +42,7 @@ func add_floor() -> void:
 func hardpoint_positions() -> Array[Vector2]:
 	var points: Array[Vector2] = []
 	for floor_index in range(level):
-		var y := -20.0 - floor_index * 72.0
+		var y: float = -20.0 - float(floor_index) * 72.0
 		points.append(Vector2(-58, y))
 		points.append(Vector2(58, y))
 	return points
@@ -53,14 +53,14 @@ func _draw() -> void:
 	if damage_flash > 0.0: metal = Color("74483e")
 	draw_rect(Rect2(-82, -12, 164, 28), Color("252b2b"), true)
 	for i in range(level):
-		var y := -66.0 - i * 72.0
+		var y: float = -66.0 - float(i) * 72.0
 		draw_rect(Rect2(-68, y, 136, 62), metal, true)
 		draw_rect(Rect2(-74, y - 6, 148, 8), trim, true)
 		draw_line(Vector2(-55, y + 8), Vector2(55, y + 50), Color("1f2424"), 5)
 		draw_line(Vector2(55, y + 8), Vector2(-55, y + 50), Color("1f2424"), 5)
 		draw_circle(Vector2(-58, y - 7), 7, Color("b77a45"))
 		draw_circle(Vector2(58, y - 7), 7, Color("b77a45"))
-	var ratio := clamp(health / max_health, 0.0, 1.0)
+	var ratio: float = clampf(health / max_health, 0.0, 1.0)
 	if ratio < 0.75:
 		draw_line(Vector2(-48, -40), Vector2(-22, -22), Color("151818"), 4)
 	if ratio < 0.5:
