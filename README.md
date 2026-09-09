@@ -6,7 +6,7 @@ The player expands a modular defensive structure block-by-block while surviving 
 
 ## Prototype v0.1
 
-Current scaffold includes:
+The validated v0.1 scaffold includes:
 
 - 2D player movement
 - Grid-based modular building
@@ -25,8 +25,8 @@ The placeholder art is intentionally separate from the gameplay architecture so 
 
 | Input | Action |
 |---|---|
-| A / Left | Move left |
-| D / Right | Move right |
+| A / Left Arrow | Move left |
+| D / Right Arrow | Move right |
 | B | Toggle build mode |
 | Left mouse | Place basic block |
 | Esc / Right mouse | Exit build mode |
@@ -37,12 +37,25 @@ The placeholder art is intentionally separate from the gameplay architecture so 
 
 ## Open in Godot
 
-1. Install Godot 4.x.
+1. Install a current Godot 4.x release.
 2. Clone or download this repository.
 3. Open Godot Project Manager.
 4. Click **Import**.
-5. Select `project.godot`.
+5. Select `project.godot` from the repository root.
 6. Run the project with **F6/F5**.
+
+## v0.1 test checklist
+
+1. Start `Main.tscn` and confirm there are no parser/resource errors.
+2. Move with A/D and the Left/Right arrow keys.
+3. Press B and confirm the HUD shows Build Mode ON.
+4. Move the mouse and confirm the placement preview snaps to the 64×64 grid.
+5. Left-click a valid cell and confirm a block is placed and 25 gold is deducted.
+6. Wait for Wave 1 or press F1 to spawn a debug zombie.
+7. Confirm zombies move toward a building module and damage it when in range.
+8. Press F2 and confirm a zombie dies and awards gold.
+9. Kill the remaining zombies and confirm the next wave begins automatically.
+10. Press F3 to toggle the debug grid.
 
 ## Project structure
 

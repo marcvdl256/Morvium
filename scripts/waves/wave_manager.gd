@@ -16,6 +16,7 @@ signal wave_completed(wave_number: int)
 var current_wave: int = 0
 var alive_enemies: int = 0
 var spawning: bool = false
+var wave_transition_pending: bool = false
 
 func _ready() -> void:
 	if auto_start:
@@ -36,8 +37,9 @@ func _start_first_wave() -> void:
 	start_next_wave()
 
 func start_next_wave() -> void:
-	if spawning:
+	if spawning or alive_enemies > 0 or wave_transition_pending:
 		return
+
 	current_wave += 1
 	var enemy_count := base_enemy_count + current_wave
 	spawning = true
@@ -48,11 +50,13 @@ func start_next_wave() -> void:
 		await get_tree().create_timer(time_between_spawns).timeout
 
 	spawning = false
+	_try_complete_wave()
 
 func _spawn_zombie(from_left: bool) -> void:
 	if zombie_scene == null:
 		push_error("WaveManager has no zombie_scene assigned.")
 		return
+
 	var zombie := zombie_scene.instantiate() as BasicZombie
 	if zombie == null:
 		push_error("zombie_scene does not instantiate BasicZombie.")
@@ -60,9 +64,10 @@ func _spawn_zombie(from_left: bool) -> void:
 
 	var hp_multiplier := 1.0 + float(maxi(current_wave - 1, 0)) * 0.08
 	if zombie.data != null:
-		# Duplicate resource so scaling this zombie does not mutate the shared .tres.
-		zombie.data = zombie.data.duplicate()
-		zombie.data.max_health *= hp_multiplier
+		# Duplicate the resource so scaling one zombie never mutates the shared .tres.
+		zombie.data = zombie.data.duplicate() as ZombieData
+		if zombie.data != null:
+			zombie.data.max_health *= hp_multiplier
 
 	zombie.global_position = Vector2(left_spawn_x if from_left else right_spawn_x, ground_spawn_y)
 	get_tree().current_scene.add_child(zombie)
@@ -71,10 +76,17 @@ func _spawn_zombie(from_left: bool) -> void:
 
 func _on_zombie_died(_zombie: BasicZombie, _reward: int) -> void:
 	alive_enemies = maxi(0, alive_enemies - 1)
-	if alive_enemies == 0 and not spawning:
-		wave_completed.emit(current_wave)
-		await get_tree().create_timer(time_between_waves).timeout
-		start_next_wave()
+	_try_complete_wave()
+
+func _try_complete_wave() -> void:
+	if current_wave <= 0 or spawning or alive_enemies != 0 or wave_transition_pending:
+		return
+
+	wave_transition_pending = true
+	wave_completed.emit(current_wave)
+	await get_tree().create_timer(time_between_waves).timeout
+	wave_transition_pending = false
+	start_next_wave()
 
 func spawn_debug_zombie() -> void:
 	_spawn_zombie(true)
@@ -83,6 +95,7 @@ func kill_one_debug_zombie() -> void:
 	var zombies := get_tree().get_nodes_in_group("zombies")
 	if zombies.is_empty():
 		return
+
 	var zombie := zombies[0]
 	if zombie is BasicZombie:
 		(zombie as BasicZombie).die()

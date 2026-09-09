@@ -47,6 +47,10 @@ Spawns waves indefinitely.
 Current prototype:
 - enemy count = base count + wave number
 - health multiplier = `1 + (wave - 1) × 0.08`
+- a wave completes only after spawning has finished and the tracked alive-enemy count reaches zero
+- `wave_transition_pending` prevents duplicate next-wave timers
+
+Each zombie receives a duplicated `ZombieData` resource before wave-specific health scaling is applied, so the shared `.tres` file remains unchanged.
 
 The values are deliberately simple and should be balance-tuned later.
 
